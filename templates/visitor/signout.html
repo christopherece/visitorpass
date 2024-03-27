@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-10 text-center">
+                    <img src="{% static 'img/topit.png' %}" style="width: 250px; height: auto; display: block; margin: 0 auto;" alt="">
+                    <h5 class="text-center mb-4">Please select your name and click Signout</h5>
+                    
+                        <table class="table" id="logOut">
+                            <thead>
+                            <tr>
+                                <!-- <th scope="col">#</th> -->
+                                <th scope="col">Name</th>
+                                <th scope="col">Date of Visit</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for visitor in visitors %}
+                                    <tr>
+                                        <!-- <th scope="row">{{visitor.id}}</th> -->
+                                        <td>{{visitor.name}}</td>
+                                        <td>{{visitor.login_date}}</td>
+
+                                        <td>
+                                            <a 
+                                                type="button" 
+                                                class="btn btn-danger logoutButton" 
+                                                data-id="{{ visitor.id }}"
+                                                id="openLogoutModal"
+                                                
+                                            >Sign Out</a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <li>No Visitor Found</li>
+                                {% endfor %}
+                            
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+        </div>
+    
+      
+      <script>
+        $(document).ready(function() {
+            $('#logOut').on("click", ".logoutButton", function(){
+                var id = $(this).data('id');
+                var signoutForm = $('#signoutForm').attr('action', '{% url "logout" 0 %}'.replace('0', id));
+
+                $('#logoutModal').modal('show');
+
+            })
+
+        });
+    </script>
+
+    <script>
+        setTimeout(function() {
+            window.location.href = 'https://visitor.balaydalakay.com/';
+            // window.location.href = 'http://localhost:8000/';
+
+        }, 15000); // 3000 milliseconds = 3 seconds
+    </script>
+
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalModalLabel">
+                
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="signoutForm" method="post" action="">
+            {% csrf_token %}
+
+            
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                <strong>Error:</strong>
+                <ul>
+                    {% for field in form %}
+                    {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="card-body">
+                <h5>Are you sure you want to sign Out?</h5>
+            </div>
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Sign Out</button>
+        </div>
+      </form>
+
+      </div>
+    </div>
+        </div>
+  {% endblock %}
+

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Centered content -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <!-- Logo -->
+            {% if messages %}
+                <div id="notification" class="notification">
+                    {% for message in messages %}
+                        <h3{% if message.tags %} class="{{ message.tags }} alert-info "{% endif %}>{{ message }}</h3>
+                    {% endfor %}
+                </div>
+                <script>
+                    setTimeout(function() {
+                        var notification = document.getElementById('notification');
+                        notification.style.display = 'none';
+                    }, 5000); // 5000 milliseconds = 5 seconds
+                </script>
+            {% endif %}
+            <div class="col-md-6 text-center"> <!-- Adjust col-md-6 to desired width -->
+                <div class="image-container">
+                    <img src="{% static 'img/topit.png' %}" alt="Your Logo" class="img-fluid" style="max-height: 150px;">
+                    <!-- Title -->
+                    <h1>TopiITSolutions Guest Sign In</h1>
+                    <!-- Buttons -->
+                    <div class="btn-container">
+                        <a href="{% url 'login_visitor' %}" class="btn btn-primary btn-lg-custom">Sign In</a>
+                        <a href="{% url 'signout_visitor' %}" class="btn btn-secondary btn-lg-custom">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

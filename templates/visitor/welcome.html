@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+  <title>TopiITSolutions Guest Log In</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  <style>
+    /* Apply styles to the body and HTML to ensure full height */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Style the wrapper and main content */
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    /* Style the footer */
+    footer.footer {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+    }
+
+    /* Ensure that the content area grows to fill the available space */
+    .content {
+        flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+    <div class="wrapper">
+    <!-- Top Bar -->
+    {% include 'partials/_topbar.html' %}
+    <!-- Navbar -->
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <img src="{% static 'img/topit.png' %}" style="width: 350px; height: auto; display: block; margin: 0 auto;" alt="">
+                    <h2 class="text-center mb-4">Welcome, {{ name }}!</h2>
+                    <h3>Staff has been notified and will see you soon!</h3>
+                    
+                </div>
+            </div>
+        </div>
+    {% include 'partials/_footer.html' %}
+
+    <script>
+        setTimeout(function() {
+            window.location.href = 'https://visitor.balaydalakay.com/';
+            // window.location.href = 'http://localhost:8000/';
+
+        }, 5000); // 3000 milliseconds = 3 seconds
+    </script>
+
+    
+</body>
+</html>

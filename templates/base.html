@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+  <title>TopITSolutions Guest LogIn</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/clock.css' %}">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+
+
+  <style>
+    /* Apply styles to the body and HTML to ensure full height */
+    
+  </style>
+</head>
+<body>
+    <div class="wrapper">
+    <!-- Top Bar -->
+    {% include 'partials/_topbar.html' %}
+    <!-- Navbar -->
+    
+    {% block content %}
+
+    {% endblock %}
+
+    {% include 'partials/_footer.html' %}
+
+    <!-- Include Bootstrap JS and jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#logOut').on("click", ".logoutButton", function(){
+                    var id = $(this).data('id');
+                    var signoutForm = $('#signoutForm').attr('action', '{% url "logout" 0 %}'.replace('0', id));
+    
+                    $('#logoutModal').modal('show');
+    
+                })
+    
+            });
+        </script>
+
+        <script>
+            // clock.js
+            function updateClock() {
+                const clockDisplay = document.getElementById('clockDisplay');
+                const dateDisplay = document.getElementById('dateDisplay');
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const date = now.toDateString();
+                
+                clockDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+                dateDisplay.textContent = date;
+            }
+
+            // Update the clock every second
+            setInterval(updateClock, 1000);
+
+            // Initial call to display the clock immediately
+            updateClock();
+
+        </script>
+
+        <script>
+            setTimeout(function() {
+                window.location.href = 'https://visitor.balaydalakay.com/';
+                // window.location.href = 'http://localhost:8000/';
+
+            }, 60000); // 3000 milliseconds = 3 seconds
+        </script>
+        
+    </div>
+</body>
+</html>
