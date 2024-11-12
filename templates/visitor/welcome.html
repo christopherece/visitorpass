@@ -8,32 +8,39 @@
   <link rel="stylesheet" href="/static/css/style.css">
 
   <style>
-    /* Apply styles to the body and HTML to ensure full height */
+    /* Ensure the body and html take full height */
     html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
+      height: 100%;
+      margin: 0;
     }
 
-    /* Style the wrapper and main content */
     .wrapper {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      height: 100%; /* Make the wrapper take up full height */
     }
 
-    /* Style the footer */
-    footer.footer {
-        background-color: #333;
-        color: #fff;
-        padding: 10px;
-    }
-
-    /* Ensure that the content area grows to fill the available space */
     .content {
-        flex-grow: 1;
+      flex: 1; /* Allow content to take up available space */
+    }
+
+    /* Footer styling */
+    footer {
+      background-color: #333333;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      margin-top: auto; /* Push the footer to the bottom */
+    }
+
+    /* Other styling remains the same */
+    .container.my-5 {
+      border: 2px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
     }
   </style>
+  
 </head>
 <body>
     <div class="wrapper">
