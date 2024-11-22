@@ -3,10 +3,15 @@
 
 {% block content %}
 <div class="container">
-    <!-- Bootstrap row with a 6-column wide canvas -->
     <div class="row">
+        <!-- First chart (Visitors by Name) -->
         <div class="col-6">
-            <canvas id="myChart" width="400" height="400"></canvas>
+            <canvas id="myChartVisitors" width="400" height="400"></canvas>
+        </div>
+        
+        <!-- Second chart (Visits by Date) -->
+        <div class="col-6">
+            <canvas id="myChartDates" width="400" height="400"></canvas>
         </div>
     </div>
 </div>
@@ -14,14 +19,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
+    // Chart for Visitors (Person to Visit)
+    var ctxVisitors = document.getElementById('myChartVisitors').getContext('2d');
+    var myChartVisitors = new Chart(ctxVisitors, {
         type: 'bar',
         data: {
-            labels: {{ labels|safe }},  // Person to visit (x-axis labels)
+            labels: {{ labels_visitors|safe }},  // Person to visit (x-axis labels)
             datasets: [{
                 label: 'Visitors Stats',  // Label for the y-axis
-                data: {{ data|safe }},  // Number of visits for each person
+                data: {{ data_visitors|safe }},  // Number of visits for each person
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -44,21 +50,56 @@
         options: {
             scales: {
                 y: {
-                    beginAtZero: true,  // Ensure y-axis starts from 0
+                    beginAtZero: true,
                     ticks: {
-                        stepSize: 1,  // Count by 1's on the y-axis
-                        min: 0         // Ensure y-axis starts at 0
+                        stepSize: 1,
+                        min: 0
                     },
                     title: {
                         display: true,
-                        text: 'Number of Visits'  // Title for the y-axis
+                        text: 'Number of Visits'
                     }
                 },
                 x: {
                     title: {
                         display: true,
-                        text: 'Person to Visit'  // Title for the x-axis
+                        text: 'Person to Visit'
                     }
+                }
+            }
+        }
+    });
+
+    // Chart for Dates (Visits by Date)
+    var ctxDates = document.getElementById('myChartDates').getContext('2d');
+    var myChartDates = new Chart(ctxDates, {
+        type: 'line',  // You can use 'line' or 'bar' for this chart
+        data: {
+            labels: {{ labels_dates|safe }},  // Dates (x-axis labels)
+            datasets: [{
+                label: 'Visits by Date',
+                data: {{ data_dates|safe }},  // Number of visits per date
+                fill: false,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Visits'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    },
+                    type: 'category',
+                    labels: {{ labels_dates|safe }},
                 }
             }
         }
