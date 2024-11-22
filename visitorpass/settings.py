@@ -33,6 +33,7 @@ CSRF_TRUSTED_ORIGINS = ['https://visitorpass.balaydalakay.com','http://visitorpa
 # Application definition
 
 INSTALLED_APPS = [
+    'report.apps.ReportConfig',
     'visitor.apps.VisitorConfig',
     'django.contrib.admin',
     'django.contrib.auth',
