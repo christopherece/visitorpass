@@ -2,9 +2,15 @@
 {% load static %}
 
 {% block content %}
-<div class="container" id="container" style="width: 50%;">
-    <canvas id="myChart" width="400" height="400"></canvas>
+<div class="container">
+    <!-- Bootstrap row with a 6-column wide canvas -->
+    <div class="row">
+        <div class="col-6">
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+    </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -14,7 +20,7 @@
         data: {
             labels: {{ labels|safe }},  // Person to visit (x-axis labels)
             datasets: [{
-                label: 'Number of Visits',  // Label for the y-axis
+                label: 'Visitors Stats',  // Label for the y-axis
                 data: {{ data|safe }},  // Number of visits for each person
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
