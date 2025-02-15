@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-hbn*t!-80v=c2fo_w9z#9b@)vxt(bpwopmx2vvivuz9%d7d$qw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.10.221', 'visitorpass.balaydalakay.com','www.visitorpass.balaydalakay.com','localhost']
-CSRF_TRUSTED_ORIGINS = ['https://visitorpass.balaydalakay.com','http://visitorpass.balaydalakay.com']
+ALLOWED_HOSTS = ['192.168.10.221', 'visitorpass.balaydalakay.com','visitorpass.topitsolutions.co.nz','localhost']
+CSRF_TRUSTED_ORIGINS = ['https://visitorpass.balaydalakay.com','http://visitorpass.balaydalakay.com','https://visitorpass.topitsolutions.co.nz']
 
 
 # Application definition
