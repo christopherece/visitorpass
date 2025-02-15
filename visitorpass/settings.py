@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-hbn*t!-80v=c2fo_w9z#9b@)vxt(bpwopmx2vvivuz9%d7d$qw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.10.250', 'visitmate.topitsolutions.co.nz','localhost']
+ALLOWED_HOSTS = ['192.168.10.250', 'visitmate.topitsolutions.co.nz','localhost','visitorpass.topitsolutions.co.nz']
 CSRF_TRUSTED_ORIGINS = ['https://visitmate.topitsolutions.co.nz','http://visitmate.topitsolutions.co.nz']
 
 
