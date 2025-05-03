@@ -1,53 +1,65 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
+<html lang="en">
 <head>
-  <title>TopITSolutions Guest LogIn</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TopITSolutions Guest Login</title>
+
+  <!-- Fonts and CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/clock.css' %}">
-  <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-
+  <!-- Background image: New Zealand landscape -->
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
       color: #fff;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
     }
 
-    .wrapper {
-      flex: 1;
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      min-height: 100vh;
+      width: 100%;
+      padding: 20px;
     }
 
     #top-bar {
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.85);
       padding: 10px 0;
+      font-size: 0.9em;
     }
 
     #top-bar a {
-      color: #fff;
-      text-decoration: none;
+      color: #ffffff;
+      margin-left: 10px;
     }
 
-    #top-bar .social a {
-      margin: 0 10px;
+    .social a {
+      margin: 0 8px;
       font-size: 1.2em;
+      color: #ffffff;
     }
 
-    .container.my-5 {
-      flex: 1;
+    .container-center {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      flex: 1;
+      padding: 40px 20px;
     }
 
-    .image-container {
-      text-align: center;
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 30px;
     }
 
     .image-container img {
@@ -55,23 +67,12 @@
       margin-bottom: 20px;
     }
 
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 30px;
-      font-weight: 700;
-    }
-
-    .btn-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
     .btn-lg-custom {
       padding: 15px 30px;
       font-size: 1.2em;
       border-radius: 50px;
-      transition: all 0.3s ease;
+      margin: 10px;
+      min-width: 160px;
     }
 
     .btn-primary {
@@ -92,14 +93,21 @@
       background-color: #5a6268;
     }
 
+    #clock-container {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+
     #footer {
       background-color: rgba(0, 0, 0, 0.8);
-      padding: 20px 0;
-      margin-top: auto;
+      color: #aaa;
+      padding: 15px 0;
+      text-align: center;
     }
 
     #footer a {
-      color: #007bff;
+      color: #fff;
       text-decoration: none;
     }
 
@@ -107,7 +115,6 @@
       text-decoration: underline;
     }
   </style>
-
 </head>
 <body>
     <div class="wrapper">

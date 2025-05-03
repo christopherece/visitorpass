@@ -173,8 +173,8 @@ MESSAGE_TAGS = {
 #Email Config
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'noreply.ekepanuku@gmail.com'
-EMAIL_HOST_PASSWORD = 'piwnvunwuoudyibr'
+EMAIL_HOST_USER = 'balaydalakay@gmail.com'
+EMAIL_HOST_PASSWORD = 'yrdopwugbgokbmdk'
 EMAIL_USE_TLS = True
 
 try:
