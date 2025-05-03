@@ -5,7 +5,7 @@
 {% block content %}
     <!-- Navbar -->
         <div class="container mt-5">
-            <div class="row justify-content-center">
+            <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;"> <!-- Centered container with full viewport height -->
                 <div class="col-md-6 text-center">
                     <img src="{% static 'img/topit.png' %}" style="width: 350px; height: auto; display: block; margin: 0 auto;" alt="">
                     <h2 class="text-center mb-4">Welcome, {{ name }}!</h2>
