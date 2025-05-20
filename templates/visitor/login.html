@@ -2,62 +2,109 @@
 {% load static %}
 
 {% block content %}
-  <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;"> <!-- Centered container with full viewport height -->
+  <style>
+    /* Additional styles to ensure footer sticks to bottom */
+    #content-wrapper {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+  </style>
+  <div id="content-wrapper">
+  <div class="container d-flex justify-content-center align-items-center flex-grow-1"> <!-- Centered container that grows to fill available space -->
     <div class="row justify-content-center w-100"> <!-- Ensure row takes full width -->
-      <!-- Sidebar Card for Date, Time, and Assistance Info -->
-      <div class="col-lg-4 col-md-5 mb-4 d-flex">
-        <div class="card p-4 shadow w-100" style="background: rgba(255, 255, 255, 0.95); border: none; border-radius: 20px;">
-          <div class="text-center">
-            <h2 class="text-dark font-weight-bold mb-4">Visitor Information</h2>
-            <div class="date mb-4">
-              <span id="dateDisplay" class="h3 font-weight-bold text-primary"></span>
-            </div>
-            <div class="clock mb-4">
-              <span id="clockDisplay" class="display-4 font-weight-bold text-dark"></span>
-            </div>
-            <hr class="my-4" style="border-top: 2px solid #007bff;">
-            <div class="my-4">
-              <h4 class="text-dark">For assistance, please call:
-              </h4>
-              <h3 class="text-dark">
-
-                093-123-456
-              </h3>
+      <!-- Combined Card -->
+      <div class="col-lg-10 col-md-11 mb-4">
+        <div class="card shadow w-100" style="background: rgba(255, 255, 255, 0.95); border: none; border-radius: 20px; overflow: hidden;">
+          <!-- Card Header -->
+          <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #007bff, #0056b3); border: none;">
+            <img src="{% static 'img/topit.png' %}" style="width: 180px; height: auto; display: block; margin: 0 auto 15px;" alt="TopIT Solutions Logo">
+            <h2 class="text-white font-weight-bold mb-0" style="font-size: 2rem; letter-spacing: 0.5px;">Visitor Management System</h2>
+          </div>
+          
+          <!-- Card Body -->
+          <div class="card-body p-4">
+            <div class="row">
+              <!-- Left Side: Visitor Information -->
+              <div class="col-lg-4 col-md-5 border-right">
+                <div class="text-center">
+                  <h3 class="mb-4" style="color: #333; font-weight: 600; font-size: 1.5rem;">Visitor Information</h3>
+                  
+                  <!-- Date Display -->
+                  <div class="date mb-3">
+                    <p class="text-muted mb-1" style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Today's Date</p>
+                    <span id="dateDisplay" class="h4 font-weight-bold text-primary"></span>
+                  </div>
+                  
+                  <!-- Clock Display -->
+                  <div class="clock mb-4">
+                    <p class="text-muted mb-1" style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Current Time</p>
+                    <span id="clockDisplay" class="display-4 font-weight-bold text-dark"></span>
+                  </div>
+                  
+                  <hr class="my-4" style="border-top: 2px solid rgba(0, 123, 255, 0.3);">
+                  
+                  <!-- Assistance Information -->
+                  <div class="assistance-info my-4">
+                    <h5 class="text-dark mb-3" style="font-size: 1.1rem; letter-spacing: 0.5px;">
+                      <i class="fas fa-phone-alt mr-2 text-primary"></i>For assistance, please call:
+                    </h5>
+                    <h3 class="text-dark" style="font-size: 1.8rem; letter-spacing: 1px;">
+                      093-123-456
+                    </h3>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Right Side: Login Form -->
+              <div class="col-lg-8 col-md-7">
+          
+                <h2 class="text-center mb-4" style="color: #333; font-weight: 600; font-size: 2rem; letter-spacing: 0.5px;">Welcome, Visitor!</h2>
+                
+                <form method="post">
+                  {% csrf_token %}
+                  
+                  <!-- Name Field -->
+                  <div class="form-group mb-4">
+                    <label for="{{ form.name.id_for_label }}" class="font-weight-bold" style="color: #555; font-size: 1rem; letter-spacing: 0.5px;">
+                      <i class="fas fa-user mr-2 text-primary"></i>Your Name:
+                    </label>
+                    <input type="text" name="{{ form.name.html_name }}" id="{{ form.name.auto_id }}" class="form-control form-control-lg rounded-pill" {% if form.name.value %}value="{{ form.name.value }}"{% endif %} required>
+                  </div>
+                  
+                  <!-- Person to Visit Field -->
+                  <div class="form-group mb-4">
+                    <label for="id_person_to_visit_search" class="font-weight-bold" style="color: #555; font-size: 1rem; letter-spacing: 0.5px;">
+                      <i class="fas fa-id-badge mr-2 text-primary"></i>Person to Visit:
+                    </label>
+                    <input type="text" name="person_to_visit_search" id="id_person_to_visit_search" class="form-control form-control-lg rounded-pill" placeholder="Search for staff member..." autocomplete="off">
+                    {{ form.person_to_visit }}
+                    {{ form.person_to_visit_id }}
+                    <div id="search-results" class="list-group mt-2 shadow-sm" style="max-height: 200px; overflow-y: auto; display: none; border-radius: 15px;"></div>
+                  </div>
+                  
+                  <!-- Action Buttons -->
+                  <div class="row mt-5">
+                    <div class="col-md-4 pr-md-2">
+                      <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-lg btn-block" style="border-radius: 50px; font-weight: 600; letter-spacing: 0.5px;">
+                        <i class="fas fa-arrow-left mr-2"></i>Back
+                      </a>
+                    </div>
+                    <div class="col-md-8 pl-md-2">
+                      <button type="submit" class="btn btn-primary btn-lg btn-block" style="border-radius: 50px; font-weight: 600; padding: 10px 25px; background: linear-gradient(135deg, #007bff, #0056b3); border: none;">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Main Content -->
-      <div class="col-lg-6 col-md-7 text-center d-flex">
-        <div class="w-100">
-          <img src="{% static 'img/topit.png' %}" style="width: 250px; height: auto; display: block; margin: 0 auto;" alt="TopIT Solutions Logo">
-          <h1 class="text-center my-4" style="color: #fff; font-weight: 700; font-size: 2.5rem;">Welcome, Visitor!</h1>
-          <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-              {{ form.name.label_tag }}
-              {{ form.name }}
-            </div>
-            <div class="form-group">
-              <label for="id_person_to_visit_search">Person to visit:</label>
-              {{ form.person_to_visit_search }}
-              {{ form.person_to_visit }}
-              {{ form.person_to_visit_id }}
-              <div id="search-results" class="list-group mt-2" style="max-height: 200px; overflow-y: auto; display: none;"></div>
-            </div>
-            <div class="row">
-              <div class="col-md-4 text-left">
-                <a href="{% url 'dashboard' %}" class="btn btn-danger btn-block py-3">Back</a>
-              </div>
-              <div class="col-md-8">
-                <button type="submit" class="btn btn-primary btn-block py-3">Log In</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
     </div>
+  </div>
   </div>
 
   <script>
