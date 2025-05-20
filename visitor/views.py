@@ -39,18 +39,24 @@ def login_visitor(request):
         form = VisitorLoginForm(request.POST)
         
         if form.is_valid():
-            # email = form.cleaned_data['email']
             name = form.cleaned_data['name']
             person_to_visit = form.cleaned_data['person_to_visit']
             staff_email = person_to_visit.email
             visitor, created = Visitor.objects.get_or_create(name=name, person_to_visit=person_to_visit)
-            send_mail(
-                'You Have a Visitor',
-                name + ' is waiting for you at the Reception.',
-                'balaydalakay@gmail.com',
-                [staff_email, 'christopheranchetaece@gmail.com'],
-                fail_silently=False
-            )
+            
+            # Try to send email, but don't let SSL errors prevent login
+            try:
+                send_mail(
+                    'You Have a Visitor',
+                    name + ' is waiting for you at the Reception.',
+                    'balaydalakay@gmail.com',
+                    [staff_email, 'christopheranchetaece@gmail.com'],
+                    fail_silently=True  # Changed to True to prevent errors from breaking the flow
+                )
+            except Exception as e:
+                # Log the error but continue with the login process
+                print(f"Email sending failed: {e}")
+                
             return render(request, 'visitor/welcome.html', {'name': name})
     else:
         form = VisitorLoginForm()
@@ -58,3 +64,16 @@ def login_visitor(request):
 
 def welcome(request):
     return render(request, 'visitor/welcome.html')
+
+def search_staff(request):
+    """
+    AJAX view to search for staff members based on a query string
+    """
+    from django.http import JsonResponse
+    from .models import PersonToVisit
+    
+    query = request.GET.get('query', '')
+    if query:
+        staff_members = PersonToVisit.objects.filter(name__icontains=query).values('id', 'name')
+        return JsonResponse(list(staff_members), safe=False)
+    return JsonResponse([], safe=False)

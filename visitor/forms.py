@@ -6,13 +6,23 @@ from datetime import date
 
 class VisitorLoginForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    # email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    # person_to_visit = forms.ModelChoiceField(queryset=PersonToVisit.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    # Hidden field to store the selected person_to_visit ID
+    person_to_visit_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+    # Text input for searching staff
+    person_to_visit_search = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Type to search for staff...',
+            'autocomplete': 'off'
+        })
+    )
+    # The actual ModelChoiceField (hidden from the user)
     person_to_visit = forms.ModelChoiceField(
-            queryset=PersonToVisit.objects.all(),
-            widget=forms.Select(attrs={'class': 'form-control'}),
-            empty_label="Select a Staff to visit"  # This adds a default option
-        )
+        queryset=PersonToVisit.objects.all(),
+        required=True,
+        widget=forms.HiddenInput()
+    )
     # Updated submit method to handle form submission and save data
     def submit(self):
         if self.is_valid():

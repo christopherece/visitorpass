@@ -35,6 +35,7 @@ CSRF_TRUSTED_ORIGINS = ['https://visitorpass.balaydalakay.com','http://visitorpa
 INSTALLED_APPS = [
     'report.apps.ReportConfig',
     'visitor.apps.VisitorConfig',
+    'admin_portal.apps.AdminPortalConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -176,6 +177,18 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'balaydalakay@gmail.com'
 EMAIL_HOST_PASSWORD = 'yrdopwugbgokbmdk'
 EMAIL_USE_TLS = True
+
+# For development, use console backend to avoid SSL issues
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    
+# Disable SSL certificate verification only in development
+# This is not recommended for production environments
+import ssl
+if DEBUG:
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 try:
     from .local_settings import *

@@ -40,8 +40,11 @@
               {{ form.name }}
             </div>
             <div class="form-group">
-              {{ form.person_to_visit.label_tag }}
+              <label for="id_person_to_visit_search">Person to visit:</label>
+              {{ form.person_to_visit_search }}
               {{ form.person_to_visit }}
+              {{ form.person_to_visit_id }}
+              <div id="search-results" class="list-group mt-2" style="max-height: 200px; overflow-y: auto; display: none;"></div>
             </div>
             <div class="row">
               <div class="col-md-4 text-left">
@@ -79,5 +82,73 @@
     setTimeout(function() {
       window.location.href = 'https://visitorpass.topitsolutions.co.nz/';
     }, 60000);
+
+    // Live search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('id_person_to_visit_search');
+      const searchResults = document.getElementById('search-results');
+      const personToVisitInput = document.getElementById('id_person_to_visit');
+      const personToVisitIdInput = document.getElementById('id_person_to_visit_id');
+      let debounceTimer;
+
+      // Function to perform the search
+      function performSearch(query) {
+        if (query.length < 2) {
+          searchResults.style.display = 'none';
+          return;
+        }
+
+        fetch(`{% url 'search_staff' %}?query=${encodeURIComponent(query)}`)
+          .then(response => response.json())
+          .then(data => {
+            searchResults.innerHTML = '';
+            if (data.length > 0) {
+              data.forEach(staff => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'list-group-item list-group-item-action';
+                item.textContent = staff.name;
+                item.dataset.id = staff.id;
+                item.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  searchInput.value = staff.name;
+                  personToVisitInput.value = staff.id;
+                  personToVisitIdInput.value = staff.id;
+                  searchResults.style.display = 'none';
+                });
+                searchResults.appendChild(item);
+              });
+              searchResults.style.display = 'block';
+            } else {
+              searchResults.style.display = 'none';
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching staff:', error);
+          });
+      }
+
+      // Add event listener for input changes with debounce
+      searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => performSearch(query), 300);
+      });
+
+      // Hide search results when clicking outside
+      document.addEventListener('click', function(e) {
+        if (e.target !== searchInput && e.target !== searchResults) {
+          searchResults.style.display = 'none';
+        }
+      });
+
+      // Show results again when focusing on the search input
+      searchInput.addEventListener('focus', function() {
+        const query = this.value.trim();
+        if (query.length >= 2) {
+          performSearch(query);
+        }
+      });
+    });
   </script>
 {% endblock %}
