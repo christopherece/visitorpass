@@ -19,7 +19,7 @@
         <div class="card shadow w-100" style="background: rgba(255, 255, 255, 0.95); border: none; border-radius: 20px; overflow: hidden;">
           <!-- Card Header -->
           <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #007bff, #0056b3); border: none;">
-            <img src="{% static 'img/topit.png' %}" style="width: 180px; height: auto; display: block; margin: 0 auto 15px;" alt="TopIT Solutions Logo">
+            <img src="{% static 'img/logo.png' %}" style="width: 180px; height: auto; display: block; margin: 0 auto 15px;" alt="TopIT Solutions Logo">
             <h2 class="text-white font-weight-bold mb-0" style="font-size: 2rem; letter-spacing: 0.5px;">Visitor Management System</h2>
           </div>
           
@@ -167,72 +167,43 @@
 
       // Function to perform the search
       function performSearch(query) {
-        // Show no results message immediately if query is empty
-        if (!query.trim()) {
+        if (query.length < 2) {
           searchResults.style.display = 'none';
           noResultsMessage.style.display = 'none';
           return;
         }
 
-        // Show no results message while searching
-        searchResults.style.display = 'none';
-        noResultsMessage.style.display = 'block';
-
         fetch(`/search-staff/?query=${encodeURIComponent(query)}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.length === 0) {
-            return; // Keep showing no results message
-          }
-
-          // Format the results to include department and email
-          const results = data.map(item => ({
-            id: item.id,
-            name: item.name,
-            department: 'Department', // Add a default department
-            email: 'email@example.com' // Add a default email
-          }));
-
-          const html = results.map(result => `
-            <a href="#" class="list-group-item list-group-item-action py-2" data-id="${result.id}" style="border-radius: 10px;">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">${result.name}</h5>
-                <small class="text-muted">${result.department}</small>
-              </div>
-              <small class="text-muted">${result.email}</small>
-            </a>
-          `).join('');
-          
-          searchResults.innerHTML = html;
-          searchResults.style.display = 'block';
-          noResultsMessage.style.display = 'none';
-          
-          // Handle click events on search results
-          searchResults.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function(e) {
-              e.preventDefault();
-              const id = this.dataset.id;
-              const name = this.querySelector('h5').textContent;
-              
-              // Update hidden input fields
-              personToVisitInput.value = name;
-              personToVisitIdInput.value = id;
-              
-              // Update search input with selected name
-              searchInput.value = name;
-              
-              // Hide search results
+          .then(response => response.json())
+          .then(data => {
+            searchResults.innerHTML = '';
+            if (data.length > 0) {
+              data.forEach(staff => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'list-group-item list-group-item-action';
+                item.textContent = staff.name;
+                item.dataset.id = staff.id;
+                item.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  searchInput.value = staff.name;
+                  personToVisitInput.value = staff.id;
+                  personToVisitIdInput.value = staff.id;
+                  searchResults.style.display = 'none';
+                });
+                searchResults.appendChild(item);
+              });
+              searchResults.style.display = 'block';
+            } else {
               searchResults.style.display = 'none';
-              
-              // Clear the no-results message
-              noResultsMessage.style.display = 'none';
-            });
+              noResultsMessage.style.display = 'block';
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            searchResults.style.display = 'none';
+            noResultsMessage.style.display = 'block';
           });
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          // Keep showing no results message on error
-        });
       }
 
       // Add event listener for input changes with debounce
