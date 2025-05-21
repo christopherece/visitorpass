@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+# Conditionally import dj_database_url
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,13 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-hbn*t!-80v=c2fo_w9z#9b@)vxt(bpwopmx2vvivuz9%d7d$qw'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-hbn*t!-80v=c2fo_w9z#9b@)vxt(bpwopmx2vvivuz9%d7d$qw')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['192.168.10.221', 'visitorpass.balaydalakay.com','visitorpass.topitsolutions.co.nz','localhost']
-CSRF_TRUSTED_ORIGINS = ['https://visitorpass.balaydalakay.com','http://visitorpass.balaydalakay.com','https://visitorpass.topitsolutions.co.nz']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '192.168.10.221,visitorpass.balaydalakay.com,visitorpass.topitsolutions.co.nz,localhost,127.0.0.1').split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://visitorpass.balaydalakay.com,http://visitorpass.balaydalakay.com,https://visitorpass.topitsolutions.co.nz').split(',')
 
 
 # Application definition
@@ -78,39 +84,27 @@ WSGI_APPLICATION = 'visitorpass.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-DATABASES = {
-    'default1': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'visitor_tbl',
-        'USER': 'postgres',
-        'PASSWORD': '!pass1234',
-        'HOST':'192.168.10.225',
-        'PORT': '5432',
-    },
-     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Database configuration with environment variable support
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL and dj_database_url:
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL)
     }
-    
-}
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'visitor_tbl',
-#         'USER': 'postgres',
-#         'PASSWORD': '!pass1234',
-#         'HOST':'127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
+else:
+    DATABASES = {
+        'default2': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'visitorpass_tbl',
+            'USER': 'admsrv',
+            'PASSWORD': 'Mmsucit1502',
+            'HOST':'localhost',
+            'PORT': '5432',
+        },
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation

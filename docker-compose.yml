@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # PostgreSQL service
+  web-postgres:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: visitorpass:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://admsrv:Mmsucit1502@db:5432/visitorpass_tbl
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-hbn*t!-80v=c2fo_w9z#9b@)vxt(bpwopmx2vvivuz9%d7d$qw
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+
+  # SQLite-only service (no PostgreSQL dependency)
+  web-sqlite:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: visitorpass:sqlite
+    restart: always
+    ports:
+      - "8001:8000"  # Using a different port to avoid conflict
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-hbn*t!-80v=c2fo_w9z#9b@)vxt(bpwopmx2vvivuz9%d7d$qw
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - sqlite_data:/app/db.sqlite3
+
+  # PostgreSQL database
+  db:
+    image: postgres:14-alpine
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admsrv
+      - POSTGRES_PASSWORD=Mmsucit1502
+      - POSTGRES_DB=visitorpass_tbl
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admsrv -d visitorpass_tbl"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  sqlite_data:
