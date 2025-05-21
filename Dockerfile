@@ -27,10 +27,21 @@ COPY . .
 # Create entrypoint script
 RUN echo '#!/bin/bash\n\
 set -e\n\
+\n\
 # Run migrations\n\
 python manage.py migrate\n\
+\n\
 # Create superuser\n\
-python manage.py shell -c "from django.contrib.auth.models import User; User.objects.filter(username=\"admsrv\").exists() or User.objects.create_superuser(\"admsrv\", \"admin@example.com\", \"adminpass\")"\n\
+python manage.py shell -c "\
+from django.contrib.auth.models import User; \
+import os; \
+username = os.environ.get(\"ADMIN_USERNAME\", \"admsrv\"); \
+password = os.environ.get(\"ADMIN_PASSWORD\", \"adminpass\"); \
+email = os.environ.get(\"ADMIN_EMAIL\", \"admin@example.com\"); \
+User.objects.filter(username=username).exists() or User.objects.create_superuser(username, email, password); \
+print(f\"Admin user {username} is ready to use.\")\
+"\n\
+\n\
 # Start server\n\
 exec "$@"' > /entrypoint.sh && chmod +x /entrypoint.sh
 

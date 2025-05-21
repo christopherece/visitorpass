@@ -216,8 +216,8 @@ DATABASES = {
 ## 📝 Usage
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x400?text=VisitorPass+Screenshot" alt="VisitorPass Screenshot" width="80%">
-  <p><i>Replace with actual screenshots of your application</i></p>
+  <img src="https://topitsolutions.co.nz/media/portfolio/Screenshot_2025-05-21_at_7.45.13PM.png" alt="VisitorPass Screenshot" width="80%">
+  <p><i></i></p>
 </div>
 
 ### 🚸 Visitor Flow
@@ -305,6 +305,90 @@ docker pull yourusername/visitorpass:latest
 ```
 
 The appropriate image for your architecture will be automatically selected.
+
+### Environment Variables Configuration
+
+VisitorPass supports extensive configuration through environment variables, making it easy to deploy in different environments without modifying code.
+
+#### Setup Steps:
+
+1. **Create your environment file**:
+   ```bash
+   # Copy the example file
+   cp .env.example .env
+   
+   # Edit with your specific settings
+   nano .env
+   ```
+
+2. **Available Configuration Options**:
+
+   <details>
+   <summary>Click to see all available environment variables</summary>
+
+   ```
+   # Django Settings
+   DEBUG=True
+   SECRET_KEY=your-secret-key
+   ALLOWED_HOSTS=localhost,127.0.0.1,your-domain.com
+   CSRF_TRUSTED_ORIGINS=https://your-domain.com
+
+   # Database Settings
+   USE_SQLITE=False
+   DATABASE_URL=postgresql://username:password@db:5432/dbname
+
+   # PostgreSQL Settings
+   POSTGRES_USER=username
+   POSTGRES_PASSWORD=password
+   POSTGRES_DB=dbname
+   POSTGRES_HOST=db
+   POSTGRES_PORT=5432
+
+   # Email Settings
+   EMAIL_HOST=smtp.example.com
+   EMAIL_PORT=587
+   EMAIL_HOST_USER=your-email@example.com
+   EMAIL_HOST_PASSWORD=your-password
+   EMAIL_USE_TLS=True
+
+   # Admin User Settings
+   ADMIN_USERNAME=admin
+   ADMIN_PASSWORD=adminpass
+   ADMIN_EMAIL=admin@example.com
+   ```
+   </details>
+
+3. **Run with environment variables**:
+   ```bash
+   # Using Docker Compose (recommended)
+   docker-compose up -d
+   
+   # Or with Docker run
+   docker run -p 8000:8000 --env-file .env visitorpass
+   ```
+
+4. **Override specific variables at runtime**:
+   ```bash
+   # Override admin credentials
+   ADMIN_USERNAME=superadmin ADMIN_PASSWORD=securepass docker-compose up -d
+   ```
+
+5. **Different database configurations**:
+   ```bash
+   # Use SQLite
+   docker-compose up -d web-sqlite
+   
+   # Use PostgreSQL
+   docker-compose up -d web-postgres db
+   ```
+
+#### Benefits:
+
+- **Security**: Sensitive information is kept out of your codebase
+- **Flexibility**: Easy to configure for different environments
+- **Maintainability**: All configuration in one place
+- **Portability**: Works across different machines and platforms
+
 </details>
 
 <details>
