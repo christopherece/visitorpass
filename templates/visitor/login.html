@@ -25,6 +25,12 @@
           
           <!-- Card Body -->
           <div class="card-body p-4">
+            {% if success_message %}
+              <div id="successAlert" class="alert alert-success text-center mb-4" style="background-color: #28a745; color: white; border: none; border-radius: 8px;">
+                {{ success_message }}
+              </div>
+            {% endif %}
+          <div class="card-body p-4">
             <div class="row">
               <!-- Left Side: Visitor Information -->
               <div class="col-lg-4 col-md-5 border-right">
@@ -87,8 +93,8 @@
                   <!-- Action Buttons -->
                   <div class="row mt-5">
                     <div class="col-md-4 pr-md-2">
-                      <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-lg btn-block" style="border-radius: 50px; font-weight: 600; letter-spacing: 0.5px;">
-                        <i class="fas fa-arrow-left mr-2"></i>Back
+                      <a href="{% url 'signout_visitor' %}" class="btn btn-outline-danger btn-lg btn-block" style="border-radius: 50px; font-weight: 600; letter-spacing: 0.5px;">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
                       </a>
                     </div>
                     <div class="col-md-8 pl-md-2">
@@ -105,6 +111,21 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Auto-remove success notification after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+      const successAlert = document.getElementById('successAlert');
+      if (successAlert) {
+        setTimeout(function() {
+          successAlert.style.opacity = '0';
+          setTimeout(function() {
+            successAlert.remove();
+          }, 300);
+        }, 5000);
+      }
+    });
+  </script>
   </div>
 
   <script>

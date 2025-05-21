@@ -8,9 +8,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 
 
-def dashboard(request):
-    return render(request, 'visitor/dashboard.html')
-
 def logout(request, id):
     obj = get_object_or_404(Visitor, id=id)  # Use get_object_or_404 to handle not found cases
     
@@ -20,8 +17,9 @@ def logout(request, id):
         obj.signout_date = datetime.now()
         obj.save()
             
-        messages.success(request, "You have successfully logged out.")
-        return redirect('dashboard')
+        # Store success message in session
+        request.session['success_message'] = "Successfully logged out!"
+        return redirect('login', permanent=False)
     
     return redirect('dashboard')
     
@@ -33,6 +31,11 @@ def signout_visitor(request):
         'login_date':'login_date'
     }
     return render(request, 'visitor/signout.html', context)
+
+def login(request):
+    # Check if there's a success message in the session
+    success_message = request.session.pop('success_message', None)
+    return render(request, 'visitor/login.html', {'success_message': success_message})
 
 def login_visitor(request):
     if request.method == 'POST':

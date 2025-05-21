@@ -3,8 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.dashboard, name='dashboard'),
-    path('login/', views.login_visitor, name='login_visitor'),
+    path('', views.login_visitor, name='dashboard'),  # Make login the default page
+    path('login/', views.login, name='login'),
     path('signout/', views.signout_visitor, name='signout_visitor'),
     path('logout/<int:id>/', views.logout, name='logout'),
     path('welcome/', views.welcome, name='welcome'),
