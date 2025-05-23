@@ -35,7 +35,29 @@ def signout_visitor(request):
 def login(request):
     # Check if there's a success message in the session
     success_message = request.session.pop('success_message', None)
-    return render(request, 'visitor/login.html', {'success_message': success_message})
+    
+    if request.method == 'POST':
+        form = VisitorLoginForm(request.POST)
+        if form.is_valid():
+            visitor = form.save()
+            if visitor:
+                # Try to send email, but don't let SSL errors prevent login
+                try:
+                    send_mail(
+                        'You Have a Visitor',
+                        f'{visitor.name} is waiting for you at the Reception.',
+                        'balaydalakay@gmail.com',
+                        [visitor.person_to_visit.email, 'christopheranchetaece@gmail.com'],
+                        fail_silently=True
+                    )
+                except Exception as e:
+                    print(f"Email sending failed: {e}")
+                
+                return render(request, 'visitor/welcome.html', {'name': visitor.name})
+    else:
+        form = VisitorLoginForm()
+    
+    return render(request, 'visitor/login.html', {'form': form, 'success_message': success_message})
 
 def login_visitor(request):
     if request.method == 'POST':

@@ -24,23 +24,22 @@ class VisitorLoginForm(forms.Form):
         widget=forms.HiddenInput()
     )
     # Updated submit method to handle form submission and save data
-    def submit(self):
+    def save(self, commit=True):
         if self.is_valid():
-            # email = self.cleaned_data['email']
             name = self.cleaned_data['name']
             person_to_visit = self.cleaned_data['person_to_visit']
-
-             # Check if a visitor with the same email exists for today
-            today = date.today()
-            existing_visitor = Visitor.objects.filter(name=name, created_at__date=today).first()
-
-            # if existing_visitor:
-            #     # If a visitor with the same email exists for today, you can handle this case as needed.
-            #     # For example, return a message or prevent the submission.
-            #     return None
             
-            # Create a new Visitor instance and save it to the database
-            visitor, created = Visitor.objects.get_or_create(name=name, person_to_visit=person_to_visit)
-            return visitor  # Return the visitor instance if needed
-        return None  # Return None if form is not valid
-        
+            # Create or get the visitor
+            visitor, created = Visitor.objects.get_or_create(
+                name=name,
+                person_to_visit=person_to_visit
+            )
+            
+            # Set is_signin to True and save
+            visitor.is_signin = True
+            visitor.login_date = datetime.now()
+            if commit:
+                visitor.save()
+            
+            return visitor
+        return None
