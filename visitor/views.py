@@ -39,13 +39,10 @@ def signout_visitor(request):
 def login(request):
     # Generate QR code with the current server URL
     try:
-        # Get the current server URL
-        protocol = 'http'
-        ip = '192.168.10.63'  # Using the specific IP address
-        port = '8000'  # Using the specific port
-        
-        # Create the full URL
-        full_url = f'{protocol}://{ip}:{port}/'
+        # Always use the domain name for QR code URL
+        domain = 'visitorpass.topitsolutions.co.nz'
+        protocol = 'https'
+        full_url = f'{protocol}://{domain}/'
         print(f"QR code generated with URL: {full_url}")
         
         # Generate QR code
