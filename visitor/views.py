@@ -36,7 +36,7 @@ def signout_visitor(request):
     }
     return render(request, 'visitor/signout.html', context)
 
-def login(request):
+def login_visitor(request):
     # Generate QR code with the current server URL
     try:
         # Always use the domain name for QR code URL
@@ -86,17 +86,63 @@ def login(request):
         if form.is_valid():
             visitor = form.save()
             if visitor:
-                # Try to send email, but don't let SSL errors prevent login
+                # Try to send email with detailed logging
                 try:
-                    send_mail(
+                    print("\n=== Email Sending Attempt ===")
+                    print(f"Current Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                    print(f"From: {settings.EMAIL_HOST_USER}")
+                    print(f"To: {visitor.person_to_visit.email}, christopheranchetaece@gmail.com")
+                    print(f"Subject: You Have a Visitor")
+                    print(f"Body: {visitor.name} is waiting for you at the Reception.")
+                    print(f"SMTP Server: {settings.EMAIL_HOST}:{settings.EMAIL_PORT}")
+                    print(f"Use TLS: {settings.EMAIL_USE_TLS}")
+                    print("============================")
+                    
+                    # Create email message
+                    from django.core.mail import EmailMessage
+                    email = EmailMessage(
                         'You Have a Visitor',
                         f'{visitor.name} is waiting for you at the Reception.',
-                        'balaydalakay@gmail.com',
-                        [visitor.person_to_visit.email, 'christopheranchetaece@gmail.com'],
-                        fail_silently=True
+                        settings.EMAIL_HOST_USER,
+                        [visitor.person_to_visit.email, 'christopheranchetaece@gmail.com']
                     )
+                    
+                    # Send email
+                    email.send()
+                    print("\n=== Email Sent Successfully ===")
+                    print(f"Email sent to: {visitor.person_to_visit.email}, christopheranchetaece@gmail.com")
+                    print("============================")
+                    
                 except Exception as e:
-                    print(f"Email sending failed: {e}")
+                    print("\n=== Email Sending Failed ===")
+                    print(f"Error: {str(e)}")
+                    import traceback
+                    print("Full traceback:")
+                    print(traceback.format_exc())
+                    print("============================")
+                    messages.error(request, f"Failed to send email notification: {str(e)}")
+                    # Log the error to a file as well
+                    with open('email_errors.log', 'a') as f:
+                        f.write(f"\n=== Email Error ===\n")
+                        f.write(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                        f.write(f"Error: {str(e)}\n")
+                        f.write(f"Full traceback:\n{traceback.format_exc()}\n")
+                        f.write("==================\n")
+                    
+                    # Try sending email with fail_silently=True as a fallback
+                    try:
+                        print("\n=== Attempting fallback email send ===")
+                        send_mail(
+                            'You Have a Visitor',
+                            f'{visitor.name} is waiting for you at the Reception.',
+                            settings.EMAIL_HOST_USER,
+                            [visitor.person_to_visit.email, 'christopheranchetaece@gmail.com'],
+                            fail_silently=True
+                        )
+                        print("Fallback email sent successfully")
+                    except Exception as e:
+                        print(f"Fallback email failed: {str(e)}")
+                        print("All email attempts failed")
                 
                 return render(request, 'visitor/welcome.html', {'name': visitor.name})
     else:
@@ -106,34 +152,6 @@ def login(request):
         'form': form,
         'success_message': success_message
     })
-
-def login_visitor(request):
-    if request.method == 'POST':
-        form = VisitorLoginForm(request.POST)
-        
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            person_to_visit = form.cleaned_data['person_to_visit']
-            staff_email = person_to_visit.email
-            visitor, created = Visitor.objects.get_or_create(name=name, person_to_visit=person_to_visit)
-            
-            # Try to send email, but don't let SSL errors prevent login
-            try:
-                send_mail(
-                    'You Have a Visitor',
-                    name + ' is waiting for you at the Reception.',
-                    'balaydalakay@gmail.com',
-                    [staff_email, 'christopheranchetaece@gmail.com'],
-                    fail_silently=True  # Changed to True to prevent errors from breaking the flow
-                )
-            except Exception as e:
-                # Log the error but continue with the login process
-                print(f"Email sending failed: {e}")
-                
-            return render(request, 'visitor/welcome.html', {'name': name})
-    else:
-        form = VisitorLoginForm()
-    return render(request, 'visitor/login.html', {'form': form})
 
 def welcome(request):
     return render(request, 'visitor/welcome.html')

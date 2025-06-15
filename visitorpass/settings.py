@@ -148,28 +148,51 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-# Production static files configuration
+# Production settings
 if not DEBUG:
+    # Static files configuration for production
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    
+    # Email configuration for production
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'balaydalakay@gmail.com')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'yrdopwugbgokbmdk')
     
     # Ensure the staticfiles directory exists
     if not os.path.exists(STATIC_ROOT):
         os.makedirs(STATIC_ROOT)
-        
-    # Copy static files to STATIC_ROOT
-    from django.core.management import call_command
-    call_command('collectstatic', '--noinput', verbosity=0)
     
     # Generate QR code
     try:
         call_command('generate_qr')
     except Exception as e:
         print(f"Warning: Failed to generate QR code: {e}")
+else:
+    # Email configuration for development
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'balaydalakay@gmail.com'
+    EMAIL_HOST_PASSWORD = 'yrdopwugbgokbmdk'
+    
+    # Ensure the staticfiles directory exists
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    if not os.path.exists(STATIC_ROOT):
+        os.makedirs(STATIC_ROOT)
 
-# Media Foder Settings 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Static and Media files settings
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -185,18 +208,32 @@ MESSAGE_TAGS = {
 }
 
 # Email configuration
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'balaydalakay@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'yrdopwugbgokbmdk')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
-
-# For development, use console backend to avoid SSL issues
-if DEBUG:
-    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-else:
-    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+if not DEBUG:
+    # Email configuration for production
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'balaydalakay@gmail.com'
+    EMAIL_HOST_PASSWORD = 'ablhjwgnhawepoky'
     
+    # Ensure email settings are properly configured
+    if not EMAIL_HOST_PASSWORD:
+        raise ValueError("EMAIL_HOST_PASSWORD must be set in environment variables")
+    
+else:
+    # Email configuration for development
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'balaydalakay@gmail.com'
+    EMAIL_HOST_PASSWORD = 'ablhjwgnhawepoky'
+    
+    # Ensure email settings are properly configured
+    if not EMAIL_HOST_PASSWORD:
+        raise ValueError("EMAIL_HOST_PASSWORD must be set in environment variables")
+
 # Disable SSL certificate verification only in development
 # This is not recommended for production environments
 import ssl

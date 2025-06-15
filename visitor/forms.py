@@ -1,7 +1,7 @@
 # visitor/forms.py
 from django import forms
 from .models import PersonToVisit, Visitor
-from datetime import date
+from datetime import datetime, date
 
 
 class VisitorLoginForm(forms.Form):

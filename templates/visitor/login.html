@@ -185,18 +185,42 @@
     function updateClock() {
       const clockDisplay = document.getElementById('clockDisplay');
       const dateDisplay = document.getElementById('dateDisplay');
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const seconds = now.getSeconds().toString().padStart(2, '0');
-      const date = now.toDateString();
       
-      clockDisplay.textContent = `${hours}:${minutes}:${seconds}`;
-      dateDisplay.textContent = date;
+      // Only update if elements exist and are visible
+      if (clockDisplay && dateDisplay && !clockDisplay.closest('.d-none')) {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const date = now.toDateString();
+        
+        clockDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+        dateDisplay.textContent = date;
+      }
     }
 
-    setInterval(updateClock, 1000);
-    updateClock();
+    // Only start the clock if the elements exist and are visible
+    const clockDisplay = document.getElementById('clockDisplay');
+    const dateDisplay = document.getElementById('dateDisplay');
+    if (clockDisplay && dateDisplay && !clockDisplay.closest('.d-none')) {
+      setInterval(updateClock, 1000);
+      updateClock();
+    }
+
+    // Add resize event listener to restart clock if display changes
+    window.addEventListener('resize', function() {
+      if (clockDisplay && dateDisplay && !clockDisplay.closest('.d-none')) {
+        // Restart the clock if it wasn't running
+        if (!window.clockInterval) {
+          window.clockInterval = setInterval(updateClock, 1000);
+          updateClock();
+        }
+      } else if (window.clockInterval) {
+        // Stop the clock if elements are hidden
+        clearInterval(window.clockInterval);
+        window.clockInterval = null;
+      }
+    });
 
     // Redirect after 60 seconds
     setTimeout(function() {
