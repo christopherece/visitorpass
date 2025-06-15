@@ -1,38 +1,9 @@
-# visitor/models.py
 from django.db import models
-from datetime import datetime
-from django.contrib.auth.models import User
+from django.conf import settings
 import qrcode
 from io import BytesIO
 from django.core.files.base import ContentFile
-
-class PersonToVisit(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-class Staff(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    department = models.CharField(max_length=100)
-    position = models.CharField(max_length=100)
-    profile_picture = models.ImageField(upload_to='staff_photos/', null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-class Visitor(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(blank=True, null=True)
-    person_to_visit = models.ForeignKey(PersonToVisit, on_delete=models.CASCADE)
-    login_date = models.DateTimeField(default=datetime.now, blank=True, null=True)
-    signout_date = models.DateTimeField(blank=True, null=True)
-    is_signin = models.BooleanField(default=True, blank=True, null=True)
-    is_signout = models.BooleanField(default=False, blank=True, null=True)
-
-    def __str__(self):
-        return self.name
+import base64
 
 class QRCode(models.Model):
     url = models.URLField(default='https://visitorpass.topitsolutions.co.nz/')

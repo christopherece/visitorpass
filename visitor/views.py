@@ -1,15 +1,12 @@
 # visitor/views.py
 from django.shortcuts import render, redirect
 from .forms import VisitorLoginForm
-from .models import Visitor
+from .models import Visitor, QRCode
 from django.core.mail import send_mail
 from datetime import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-import qrcode
-from io import BytesIO
 from django.conf import settings
-import base64
 
 
 def logout(request, id):
@@ -37,11 +34,48 @@ def signout_visitor(request):
     return render(request, 'visitor/signout.html', context)
 
 def login_visitor(request):
-    # Generate QR code with the configured domain
     try:
-        # Hardcoded domain for QR code
-        full_url = 'https://visitorpass.topitsolutions.co.nz/'
-        print(f"QR code generated with URL: {full_url}")
+        # Get or create QR code
+        qr = QRCode.get_or_create_qr()
+        if not qr:
+            print("Failed to get or create QR code")
+            return render(request, 'visitor/login.html', {
+                'error': 'Failed to generate QR code'
+            })
+            
+        print(f"QR code URL: {qr.url}")
+        print(f"QR code image path: {qr.image.url if qr.image else 'No image'}")
+        
+        # Pass QR code to template
+        context = {'qr': qr}
+        
+        # Rest of your login logic...
+        if request.method == 'POST':
+            form = VisitorLoginForm(request.POST)
+            if form.is_valid():
+                visitor = form.save()
+                if visitor:
+                    try:
+                        send_mail(
+                            'You Have a Visitor',
+                            f'{visitor.name} is waiting for you at the Reception.',
+                            settings.EMAIL_HOST_USER,
+                            [visitor.person_to_visit.email, 'christopheranchetaece@gmail.com'],
+                            fail_silently=False
+                        )
+                        print("Email sent successfully!")
+                    except Exception as e:
+                        print(f"Email sending failed: {str(e)}")
+                        messages.error(request, f"Failed to send email notification: {str(e)}")
+                    return render(request, 'visitor/welcome.html', {'name': visitor.name})
+        else:
+            form = VisitorLoginForm()
+            
+        context['form'] = form
+        return render(request, 'visitor/login.html', context)
+    except Exception as e:
+        print(f"Error in login_visitor: {str(e)}")
+        return render(request, 'visitor/login.html', {'error': str(e)})
         
         # Log request details for debugging
         print("\n=== Request Details ===")
