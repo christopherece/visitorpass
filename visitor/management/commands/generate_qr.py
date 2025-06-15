@@ -14,10 +14,8 @@ class Command(BaseCommand):
             if not os.path.exists(static_dir):
                 os.makedirs(static_dir)
 
-            # Always use the domain name for QR code URL
-            domain = 'visitorpass.topitsolutions.co.nz'
-            protocol = 'https'
-            full_url = f'{protocol}://{domain}/'
+            # Hardcoded domain for QR code
+            full_url = 'https://visitorpass.topitsolutions.co.nz/'
             
             # Generate QR code
             qr = qrcode.QRCode(

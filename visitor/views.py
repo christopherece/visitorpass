@@ -39,9 +39,8 @@ def signout_visitor(request):
 def login_visitor(request):
     # Generate QR code with the configured domain
     try:
-        # Use SITE_DOMAIN from settings
-        protocol = 'https' if not DEBUG else 'http'
-        full_url = f'{protocol}://{settings.SITE_DOMAIN}/'
+        # Hardcoded domain for QR code
+        full_url = 'https://visitorpass.topitsolutions.co.nz/'
         print(f"QR code generated with URL: {full_url}")
         
         # Log request details for debugging
