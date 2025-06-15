@@ -45,6 +45,12 @@ def login(request):
         full_url = f'{protocol}://{domain}/'
         print(f"QR code generated with URL: {full_url}")
         
+        # Delete existing QR code if it exists
+        qr_path = os.path.join(settings.STATIC_ROOT, 'img', 'qr_code.png')
+        if os.path.exists(qr_path):
+            os.remove(qr_path)
+            print("Deleted existing QR code")
+        
         # Generate QR code
         qr = qrcode.QRCode(
             version=1,
