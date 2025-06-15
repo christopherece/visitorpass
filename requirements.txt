@@ -1,10 +1,9 @@
 asgiref
 Django
 pillow
-psycopg2
 psycopg2-binary
 sqlparse
 gunicorn
 dj-database-url
-typing-extensions>=4.0.0
-qrcode[pil]>=7.4.2
+typing-extensions
+qrcode[pil]
