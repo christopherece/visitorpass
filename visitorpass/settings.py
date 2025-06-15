@@ -160,6 +160,12 @@ if not DEBUG:
     # Copy static files to STATIC_ROOT
     from django.core.management import call_command
     call_command('collectstatic', '--noinput', verbosity=0)
+    
+    # Generate QR code
+    try:
+        call_command('generate_qr')
+    except Exception as e:
+        print(f"Warning: Failed to generate QR code: {e}")
 
 # Media Foder Settings 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
