@@ -37,12 +37,11 @@ def signout_visitor(request):
     return render(request, 'visitor/signout.html', context)
 
 def login_visitor(request):
-    # Generate QR code with the current request's domain
+    # Generate QR code with the configured domain
     try:
-        # Use the request's domain and protocol
-        protocol = 'https' if request.is_secure() else 'http'
-        domain = request.get_host()
-        full_url = f'{protocol}://{domain}/'
+        # Use SITE_DOMAIN from settings
+        protocol = 'https' if not DEBUG else 'http'
+        full_url = f'{protocol}://{settings.SITE_DOMAIN}/'
         print(f"QR code generated with URL: {full_url}")
         
         # Delete existing QR code if it exists

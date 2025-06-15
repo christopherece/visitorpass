@@ -216,6 +216,7 @@ if not DEBUG:
     EMAIL_USE_TLS = True
     EMAIL_HOST_USER = 'balaydalakay@gmail.com'
     EMAIL_HOST_PASSWORD = 'ablhjwgnhawepoky'
+    SITE_DOMAIN = 'visitorpass.topitsolutions.co.nz'  # Production domain
     
     # Ensure email settings are properly configured
     if not EMAIL_HOST_PASSWORD:
@@ -229,6 +230,7 @@ else:
     EMAIL_USE_TLS = True
     EMAIL_HOST_USER = 'balaydalakay@gmail.com'
     EMAIL_HOST_PASSWORD = 'ablhjwgnhawepoky'
+    SITE_DOMAIN = 'localhost:8000'  # Development domain
     
     # Ensure email settings are properly configured
     if not EMAIL_HOST_PASSWORD:
