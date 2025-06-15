@@ -8,8 +8,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 import qrcode
 from io import BytesIO
-import base64
 from django.conf import settings
+import base64
 
 
 def logout(request, id):
