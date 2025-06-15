@@ -169,9 +169,13 @@ if not DEBUG:
     if not os.path.exists(STATIC_ROOT):
         os.makedirs(STATIC_ROOT)
     
-    # Generate QR code
+    # Generate QR code only if it doesn't exist
     try:
-        call_command('generate_qr')
+        qr_path = os.path.join(BASE_DIR, 'static', 'img', 'qr_code.png')
+        if not os.path.exists(qr_path):
+            call_command('generate_qr')
+        else:
+            print("QR code already exists, skipping generation")
     except Exception as e:
         print(f"Warning: Failed to generate QR code: {e}")
 else:

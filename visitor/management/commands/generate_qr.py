@@ -29,15 +29,30 @@ class Command(BaseCommand):
             qr.add_data(full_url)
             qr.make(fit=True)
             
+            # Save to static directory
+            static_dir = os.path.join(settings.BASE_DIR, 'static', 'img')
+            if not os.path.exists(static_dir):
+                os.makedirs(static_dir)
+                
+            # Delete existing QR code if it exists
+            qr_path = os.path.join(static_dir, 'qr_code.png')
+            if os.path.exists(qr_path):
+                os.remove(qr_path)
+                print("Deleted existing QR code")
+                
             # Create image and save
             qr_image = qr.make_image(fill_color='black', back_color='white')
             qr_image.save(os.path.join(static_dir, 'qr_code.png'))
             
-            # Also save to development directory
-            dev_dir = os.path.join(settings.BASE_DIR, 'static', 'img')
-            if not os.path.exists(dev_dir):
-                os.makedirs(dev_dir)
-            qr_image.save(os.path.join(dev_dir, 'qr_code.png'))
+            # Also save to the static root directory for production
+            if not settings.DEBUG:
+                static_root_dir = os.path.join(settings.BASE_DIR, 'staticfiles', 'img')
+                if not os.path.exists(static_root_dir):
+                    os.makedirs(static_root_dir)
+                qr_image.save(os.path.join(static_root_dir, 'qr_code.png'))
+                
+            print(f"QR code saved to: {os.path.join(static_dir, 'qr_code.png')}")
+            print(f"QR code saved to: {os.path.join(static_root_dir, 'qr_code.png') if not settings.DEBUG else 'Development mode'}")
             
             self.stdout.write(self.style.SUCCESS('Successfully generated QR code'))
         except Exception as e:
