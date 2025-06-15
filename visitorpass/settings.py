@@ -141,12 +141,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'visitorpass/static')
+    os.path.join(BASE_DIR, "static"),
 ]
+
+# Production static files configuration
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    
+    # Ensure the staticfiles directory exists
+    if not os.path.exists(STATIC_ROOT):
+        os.makedirs(STATIC_ROOT)
+        
+    # Copy static files to STATIC_ROOT
+    from django.core.management import call_command
+    call_command('collectstatic', '--noinput', verbosity=0)
 
 # Media Foder Settings 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
