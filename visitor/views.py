@@ -79,11 +79,18 @@ def login_visitor(request):
         if not os.path.exists(static_dir):
             os.makedirs(static_dir)
         
-        # Save the QR code
+        # Save the QR code to both locations
         qr_image.save(os.path.join(static_dir, 'qr_code.png'))
         
-        # Also save to the source directory for development
-        qr_image.save('visitorpass/static/img/qr_code.png')
+        # Also save to the source directory
+        source_dir = os.path.join(BASE_DIR, 'visitorpass', 'static', 'img')
+        if not os.path.exists(source_dir):
+            os.makedirs(source_dir)
+        qr_image.save(os.path.join(source_dir, 'qr_code.png'))
+        
+        # Log the file paths
+        print(f"QR code saved to: {os.path.join(static_dir, 'qr_code.png')}")
+        print(f"QR code saved to: {os.path.join(source_dir, 'qr_code.png')}")
         print(f"QR code generated with URL: {full_url}")
     except Exception as e:
         print(f"Error generating QR code: {e}")
