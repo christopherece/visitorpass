@@ -32,7 +32,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-hbn*t!-80v=c2fo_w9z#9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '192.168.10.250,visitorpass.balaydalakay.com,visitorpass.topitsolutions.co.nz,localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '192.168.10.250,192.168.10.63,visitorpass.balaydalakay.com,visitorpass.topitsolutions.co.nz,localhost,127.0.0.1').split(',')
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://visitorpass.balaydalakay.com,http://visitorpass.balaydalakay.com,https://visitorpass.topitsolutions.co.nz').split(',')
 
 
@@ -97,7 +97,7 @@ else:
             'NAME': 'visitorpass_tbl',
             'USER': 'admsrv',
             'PASSWORD': 'Mmsucit1502',
-            'HOST':'localhost',
+            'HOST':'192.168.10.42',
             'PORT': '5432',
         },
         'default': {

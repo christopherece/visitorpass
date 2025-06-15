@@ -6,6 +6,10 @@ from django.core.mail import send_mail
 from datetime import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+import qrcode
+from io import BytesIO
+import base64
+from django.conf import settings
 
 
 def logout(request, id):
@@ -33,6 +37,34 @@ def signout_visitor(request):
     return render(request, 'visitor/signout.html', context)
 
 def login(request):
+    # Generate QR code with the current server URL
+    try:
+        # Get the current server URL
+        protocol = 'http'
+        ip = '192.168.10.63'  # Using the specific IP address
+        port = '8000'  # Using the specific port
+        
+        # Create the full URL
+        full_url = f'{protocol}://{ip}:{port}/'
+        print(f"QR code generated with URL: {full_url}")
+        
+        # Generate QR code
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(full_url)
+        qr.make(fit=True)
+        
+        # Create image and save to file
+        qr_image = qr.make_image(fill_color='black', back_color='white')
+        qr_image.save('visitorpass/static/img/qr_code.png')
+        print(f"QR code generated with URL: {full_url}")
+    except Exception as e:
+        print(f"Error generating QR code: {e}")
+    
     # Check if there's a success message in the session
     success_message = request.session.pop('success_message', None)
     
@@ -57,7 +89,10 @@ def login(request):
     else:
         form = VisitorLoginForm()
     
-    return render(request, 'visitor/login.html', {'form': form, 'success_message': success_message})
+    return render(request, 'visitor/login.html', {
+        'form': form,
+        'success_message': success_message
+    })
 
 def login_visitor(request):
     if request.method == 'POST':
