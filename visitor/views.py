@@ -56,11 +56,18 @@ def login_visitor(request):
         
         # Delete existing QR code if it exists
         import os
-        qr_path = os.path.join(settings.STATIC_ROOT, 'img', 'qr_code.png')
+        
+        # Get the correct static files directory
+        static_dir = os.path.join(BASE_DIR, 'static', 'img')
+        if not os.path.exists(static_dir):
+            os.makedirs(static_dir)
+            
+        # Delete existing QR code if it exists
+        qr_path = os.path.join(static_dir, 'qr_code.png')
         if os.path.exists(qr_path):
             os.remove(qr_path)
             print("Deleted existing QR code")
-        
+            
         # Generate QR code
         qr = qrcode.QRCode(
             version=1,
@@ -74,10 +81,18 @@ def login_visitor(request):
         # Create image and save to file
         qr_image = qr.make_image(fill_color='black', back_color='white')
         
-        # Get the static files directory
-        static_dir = os.path.join(settings.STATIC_ROOT, 'img')
-        if not os.path.exists(static_dir):
-            os.makedirs(static_dir)
+        # Save the QR code
+        qr_image.save(os.path.join(static_dir, 'qr_code.png'))
+        
+        # Also save to the static root directory for production
+        if not DEBUG:
+            static_root_dir = os.path.join(BASE_DIR, 'staticfiles', 'img')
+            if not os.path.exists(static_root_dir):
+                os.makedirs(static_root_dir)
+            qr_image.save(os.path.join(static_root_dir, 'qr_code.png'))
+            
+        print(f"QR code saved to: {os.path.join(static_dir, 'qr_code.png')}")
+        print(f"QR code saved to: {os.path.join(static_root_dir, 'qr_code.png') if not DEBUG else 'Development mode'}")
         
         # Save the QR code to both locations
         qr_image.save(os.path.join(static_dir, 'qr_code.png'))
