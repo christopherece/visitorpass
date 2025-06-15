@@ -44,6 +44,16 @@ def login_visitor(request):
         full_url = f'{protocol}://{settings.SITE_DOMAIN}/'
         print(f"QR code generated with URL: {full_url}")
         
+        # Log request details for debugging
+        print("\n=== Request Details ===")
+        print(f"Host: {request.get_host()}")
+        print(f"Headers: {dict(request.headers)}")
+        print(f"Meta: {dict(request.META)}")
+        print(f"Scheme: {request.scheme}")
+        print(f"Is secure: {request.is_secure()}")
+        print(f"Path: {request.path}")
+        print("=======================")
+        
         # Delete existing QR code if it exists
         import os
         qr_path = os.path.join(settings.STATIC_ROOT, 'img', 'qr_code.png')
