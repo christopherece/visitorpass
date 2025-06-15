@@ -60,6 +60,16 @@ def login(request):
         
         # Create image and save to file
         qr_image = qr.make_image(fill_color='black', back_color='white')
+        
+        # Get the static files directory
+        static_dir = os.path.join(settings.STATIC_ROOT, 'img')
+        if not os.path.exists(static_dir):
+            os.makedirs(static_dir)
+        
+        # Save the QR code
+        qr_image.save(os.path.join(static_dir, 'qr_code.png'))
+        
+        # Also save to the source directory for development
         qr_image.save('visitorpass/static/img/qr_code.png')
         print(f"QR code generated with URL: {full_url}")
     except Exception as e:
