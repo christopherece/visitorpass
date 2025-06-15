@@ -14,11 +14,12 @@ class Command(BaseCommand):
             if not os.path.exists(static_dir):
                 os.makedirs(static_dir)
 
-            # Generate QR code
-            protocol = 'https'  # Using HTTPS for production
-            host = settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'localhost'
-            full_url = f'{protocol}://{host}/'
+            # Always use the domain name for QR code URL
+            domain = 'visitorpass.topitsolutions.co.nz'
+            protocol = 'https'
+            full_url = f'{protocol}://{domain}/'
             
+            # Generate QR code
             qr = qrcode.QRCode(
                 version=1,
                 error_correction=qrcode.constants.ERROR_CORRECT_L,
