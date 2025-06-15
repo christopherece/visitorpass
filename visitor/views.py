@@ -37,15 +37,16 @@ def signout_visitor(request):
     return render(request, 'visitor/signout.html', context)
 
 def login_visitor(request):
-    # Generate QR code with the current server URL
+    # Generate QR code with the current request's domain
     try:
-        # Always use the domain name for QR code URL
-        domain = 'visitorpass.topitsolutions.co.nz'
-        protocol = 'https'
+        # Use the request's domain and protocol
+        protocol = 'https' if request.is_secure() else 'http'
+        domain = request.get_host()
         full_url = f'{protocol}://{domain}/'
         print(f"QR code generated with URL: {full_url}")
         
         # Delete existing QR code if it exists
+        import os
         qr_path = os.path.join(settings.STATIC_ROOT, 'img', 'qr_code.png')
         if os.path.exists(qr_path):
             os.remove(qr_path)
