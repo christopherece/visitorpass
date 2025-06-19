@@ -35,7 +35,7 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 # Domain configuration
 SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'visitorpass.topitsolutions.co.nz')
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '192.168.10.250,192.168.10.63,visitorpass.balaydalakay.com,visitorpass.topitsolutions.co.nz,localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '192.168.10.250,192.168.10.63,192.168.10.28,visitorpass.balaydalakay.com,visitorpass.topitsolutions.co.nz,localhost,127.0.0.1').split(',')
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://visitorpass.balaydalakay.com,http://visitorpass.balaydalakay.com,https://visitorpass.topitsolutions.co.nz').split(',')
 
 

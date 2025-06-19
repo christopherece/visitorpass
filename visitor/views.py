@@ -7,6 +7,8 @@ from datetime import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.conf import settings
+import requests
+import json
 
 
 def logout(request, id):
@@ -67,6 +69,81 @@ def login_visitor(request):
                     except Exception as e:
                         print(f"Email sending failed: {str(e)}")
                         messages.error(request, f"Failed to send email notification: {str(e)}")
+                    
+                    # === Send Print Request to Ubuntu Server ===
+                    try:
+                        # First test if print service is running
+                        print("\n=== Testing Print Service ===")
+                        test_url = "http://192.168.10.57:8001/printers"
+                        test_response = requests.get(test_url)
+                        print(f"Printers endpoint response: {test_response.text}")
+                        
+                        # Prepare print data
+                        print_data = {
+                            "printer_port": "/dev/usb/lp0",  # Default USB port for Brother QL-700
+                            "content": f"Visitor: {visitor.name}\nDate: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                        }
+                        
+                        def print_visitor_label(visitor_name):
+                            """Print a label for the visitor using the print service"""
+                            try:
+                                # Print service URL - Ubuntu server
+                                print_service_url = 'http://192.168.10.57:8001'
+                                
+                                # Prepare the print data with text
+                                print_data = {
+                                    'printer_port': '/dev/usb/lp0',
+                                    'content': f"Visitor: {visitor_name}\nDate: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                                }
+                                
+                                # Send request to print service
+                                response = requests.post(
+                                    f"{print_service_url}/print",
+                                    json=print_data,
+                                    timeout=10
+                                )
+                                
+                                if response.status_code == 200:
+                                    return True
+                                else:
+                                    print(f"Print service error: {response.text}")
+                                    return False
+                            except Exception as e:
+                                print(f"Error printing label: {str(e)}")
+                                return False
+
+                        if print_visitor_label(visitor.name):
+                            print(f"🖨️ Label sent to Brother QL-700 printer successfully.")
+                        else:
+                            print(f"❌ Print server error")
+                            messages.error(request, f"Failed to print visitor label")
+                            # Log the error to a file as well
+                            with open('print_errors.log', 'a') as f:
+                                f.write(f"\n=== Print Error ===\n")
+                                f.write(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                                f.write(f"Error: {print_response.text}\n")
+                                f.write("==================\n")
+                        
+                        # Log the print attempt
+                        print(f"\n=== Print Details ===")
+                        print(f"Printer Port: /dev/usb/lp0")
+                        print(f"Content: {print_data['content']}")
+                        print("-" * 40)
+                        
+                    except Exception as e:
+                        print(f"❌ Could not print: {str(e)}")
+                        import traceback
+                        print("Full traceback:")
+                        print(traceback.format_exc())
+                        messages.error(request, f"Failed to print visitor label: {str(e)}")
+                        # Log the error to a file as well
+                        with open('print_errors.log', 'a') as f:
+                            f.write(f"\n=== Print Error ===\n")
+                            f.write(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                            f.write(f"Error: {str(e)}\n")
+                            f.write(f"Full traceback:\n{traceback.format_exc()}\n")
+                            f.write("==================\n")
+                    
                     return render(request, 'visitor/welcome.html', {'name': visitor.name})
         else:
             form = VisitorLoginForm()
@@ -208,6 +285,7 @@ def login_visitor(request):
                     except Exception as e:
                         print(f"Fallback email failed: {str(e)}")
                         print("All email attempts failed")
+                       
                 
                 return render(request, 'visitor/welcome.html', {'name': visitor.name})
     else:
