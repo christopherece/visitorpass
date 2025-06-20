@@ -23,19 +23,23 @@ VisitorPass is a comprehensive visitor management solution designed to streamlin
     <td>
       <h3>🔐 Visitor Management</h3>
       <ul>
-        <li>Simple and intuitive sign-in interface</li>
-        <li>Automatic staff notifications via email</li>
-        <li>Digital sign-out process</li>
-        <li>Visitor tracking and history</li>
+        <li>QR code-based visitor check-in system</li>
+        <li>Real-time visitor status tracking</li>
+        <li>Visitor photo capture and storage</li>
+        <li>Custom visitor categories and tags</li>
+        <li>Visitor badge printing with QR codes</li>
+        <li>Visitor arrival and departure notifications</li>
       </ul>
     </td>
     <td>
       <h3>📊 Analytics & Reporting</h3>
       <ul>
-        <li>Comprehensive dashboard with visitor statistics</li>
-        <li>Daily, weekly, and monthly reports</li>
-        <li>Custom date range reporting</li>
-        <li>Data visualization with charts and graphs</li>
+        <li>Interactive visitor analytics dashboard</li>
+        <li>Real-time visitor statistics</li>
+        <li>Custom report generation</li>
+        <li>Export reports to CSV/Excel</li>
+        <li>Trend analysis and visualization</li>
+        <li>Custom date range filtering</li>
       </ul>
     </td>
   </tr>
@@ -43,19 +47,23 @@ VisitorPass is a comprehensive visitor management solution designed to streamlin
     <td>
       <h3>👥 Staff Management</h3>
       <ul>
-        <li>Add and manage staff members</li>
-        <li>Track most visited staff</li>
-        <li>Staff email integration</li>
-        <li>Staff visit history</li>
+        <li>Staff profile management</li>
+        <li>Department-wise staff organization</li>
+        <li>Staff visit history tracking</li>
+        <li>Staff availability status</li>
+        <li>Staff notification preferences</li>
+        <li>Staff visit analytics</li>
       </ul>
     </td>
     <td>
       <h3>🛠️ Administration</h3>
       <ul>
-        <li>Secure admin portal</li>
-        <li>User authentication and authorization</li>
-        <li>Data export capabilities (CSV)</li>
-        <li>System configuration options</li>
+        <li>Role-based access control (RBAC)</li>
+        <li>Multi-user support with different permission levels</li>
+        <li>System-wide activity logging</li>
+        <li>Customizable system settings</li>
+        <li>Data backup and restore</li>
+        <li>API integration capabilities</li>
       </ul>
     </td>
   </tr>
@@ -104,8 +112,26 @@ VisitorPass is a comprehensive visitor management solution designed to streamlin
 
 ### Prerequisites
 
-<img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.8+">
-<img src="https://img.shields.io/badge/pip-latest-orange?style=for-the-badge&logo=pypi&logoColor=white" alt="pip">
+- Python 3.8 or higher
+- PostgreSQL 12+ (recommended) or SQLite
+- Pillow (for image processing)
+- QR Code generation library
+- Gunicorn (for production deployment)
+
+### 📋 Dependencies
+
+The project uses the following key dependencies:
+
+```bash
+asgiref                # ASGI (Asynchronous Server Gateway Interface)
+Django                 # Web framework
+pillow                 # Image processing
+psycopg2-binary        # PostgreSQL adapter
+sqlparse               # SQL parsing
+qrcode[pil]           # QR code generation
+gunicorn               # WSGI HTTP Server
+dj-database-url        # Database configuration
+```
 
 ### 📍 Quick Start Guide
 
@@ -118,41 +144,47 @@ VisitorPass is a comprehensive visitor management solution designed to streamlin
    cd visitorpass
    ```
 
-2. **Create and activate a virtual environment**
+2. **Create and activate virtual environment**
    ```bash
    python -m venv venv
-   
-   # On macOS/Linux
-   source venv/bin/activate
-   
-   # On Windows
-   venv\Scripts\activate
+   source venv/bin/activate  # On macOS/Linux
    ```
 
-3. **Install dependencies**
+3. **Install project dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Apply migrations**
+4. **Configure environment variables**
+   Create a `.env` file with the following variables:
+   ```env
+   DEBUG=True
+   SECRET_KEY=your-secret-key-here
+   DATABASE_URL=postgres://user:password@localhost:5432/visitorpass
+   EMAIL_HOST=smtp.example.com
+   EMAIL_PORT=587
+   EMAIL_HOST_USER=your-email@example.com
+   EMAIL_HOST_PASSWORD=your-email-password
+   ```
+
+5. **Initialize database**
    ```bash
    python manage.py migrate
    ```
 
-5. **Create a superuser**
+6. **Create admin user**
    ```bash
    python manage.py createsuperuser
    ```
 
-6. **Run the development server**
+7. **Run development server**
    ```bash
    python manage.py runserver
    ```
 
-7. **Access the application**
-   - Visitor interface: [http://localhost:8000](http://localhost:8000)
-   - Admin portal: [http://localhost:8000/admin-portal/](http://localhost:8000/admin-portal/)
-   - Django admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+8. **Access the application**
+   - Main interface: [http://localhost:8000](http://localhost:8000)
+   - Admin panel: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
 </details>
 
@@ -173,31 +205,61 @@ visitorpass/
 
 ## ⚙️ Configuration
 
-<details>
-<summary><b>Email Configuration</b></summary>
+### 📧 Email Configuration
 
-Configure email settings in `settings.py`:
+The application uses Django's built-in email backend. Configure it in your `.env` file or directly in `settings.py`:
 
 ```python
-# Email settings
+# Email settings (example)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.example.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'your-email@example.com'
-EMAIL_HOST_PASSWORD = 'your-password'
 EMAIL_USE_TLS = True
-
-# For development, use console backend to avoid SSL issues
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_USER = 'your-email@example.com'
+EMAIL_HOST_PASSWORD = 'your-email-password'
 ```
-</details>
 
-<details>
-<summary><b>Database Configuration</b></summary>
+### 🗄️ Database Configuration
 
-The application is configured to use SQLite by default. To use PostgreSQL, update the database settings in `settings.py`:
+The application supports both SQLite (default) and PostgreSQL. For production, PostgreSQL is recommended. Configure it in your `.env` file:
+
+```env
+DATABASE_URL=postgres://user:password@localhost:5432/visitorpass
+```
+
+### 🛡️ Security Configuration
+
+Important security settings:
+
+```python
+# Security settings
+SECRET_KEY = 'your-secret-key-here'
+DEBUG = False  # Set to True only in development
+ALLOWED_HOSTS = ['your-domain.com']
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+```
+
+### 📱 QR Code Settings
+
+QR code generation settings:
+
+```python
+QR_CODE_SIZE = 'L'  # Error correction level
+QR_CODE_VERSION = 1  # QR code version
+QR_CODE_BOX_SIZE = 10  # Size of each box
+QR_CODE_BORDER = 4  # Border size
+```
+
+### 📊 Analytics Settings
+
+Configure analytics settings in `settings.py`:
+
+```python
+# Analytics settings
+ANALYTICS_RETENTION_DAYS = 365  # Number of days to keep analytics data
+REPORT_DEFAULT_RANGE = '30'  # Default report range in days
+```
 
 ```python
 DATABASES = {
